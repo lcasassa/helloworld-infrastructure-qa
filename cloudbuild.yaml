@@ -35,14 +35,14 @@ steps:
     args:
       - '-c'
       - |
-        gsutil cp gs://${PROJECT_ID}-helloworld-configs/hub.enc hub.enc
+        gsutil cp gs://${PROJECT_ID}-pipeline-configs/hub.enc hub.enc
 
         gcloud kms decrypt \
-          --ciphertext-file=hub.enc \
-          --plaintext-file=/config/hub \
-          --location=global \
-          --keyring=${_KMS_KEYRING} \
-          --key=${_KMS_KEY}
+          --ciphertext-file hub.enc \
+          --plaintext-file /config/hub \
+          --location global \
+          --keyring ${_KMS_KEYRING} \
+          --key ${_KMS_KEY}
     volumes:
       - name: 'config'
         path: /config
@@ -85,7 +85,7 @@ steps:
 
         # Clone the ${_GITHUB_USERNAME}/helloworld-infrastructure-production repo
         # and patch the helloworld deployment container image.
-        hub clone "https://github.com/${_GITHUB_USERNAME}/helloworld-infrastructure-production.git"
+        hub clone "${_GITHUB_USERNAME}/helloworld-infrastructure-production"
 
         cat <<EOF > patch.yaml
         spec:
